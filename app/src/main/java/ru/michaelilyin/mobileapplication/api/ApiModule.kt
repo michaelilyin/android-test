@@ -14,7 +14,7 @@ class ApiModule {
 
     init {
         retrofit = Retrofit.Builder()
-                .baseUrl("http://michaelilyin.ru")
+                .baseUrl("http://michaelilyin.ru:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         demoApi = retrofit.create(DemoApi::class.java)

@@ -1,8 +1,12 @@
 package ru.michaelilyin.mobileapplication.api
 
+import retrofit2.Response
 import ru.michaelilyin.mobileapplication.Application
 import ru.michaelilyin.mobileapplication.api.ApiModule
+import ru.michaelilyin.mobileapplication.api.command.ApiException
+import ru.michaelilyin.mobileapplication.api.model.Demo
 import ru.michaelilyin.mobileapplication.service.command.AbstractCmd
+import java.util.*
 
 /**
  * Created by micha on 12.03.2017.

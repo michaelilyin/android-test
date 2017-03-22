@@ -38,6 +38,8 @@ class ApiService : AbstractBackgroundService() {
         fun <R : Serializable> execute(command: Command<R>, handler: android.os.Handler? = null) {
             if (isBound) {
                 service?.execute(command, handler) ?: Log.w(tag, "Service does not bound")
+            } else {
+                Log.d(tag, "Service not bound yet")
             }
         }
     }

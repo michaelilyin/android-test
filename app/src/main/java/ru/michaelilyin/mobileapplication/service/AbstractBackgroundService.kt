@@ -49,7 +49,7 @@ abstract class AbstractBackgroundService : Service() {
                     Log.d(tag, "Execute command in thread ${Thread.currentThread().name}")
                     try {
                         val result = command.call()
-                        val message = Message.obtain(handler)
+                        val message = Message.obtain()
                         message.data.putSerializable("result", result)
                         handler?.post {
                             Log.d(tag, "Execute callback in thread ${Thread.currentThread().name}")

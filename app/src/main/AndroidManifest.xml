@@ -10,7 +10,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".Application">
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -20,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.AbstractBackgroundService"/>
+        <service android:name=".api.ApiService"/>
     </application>
 
 </manifest>

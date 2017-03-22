@@ -1,5 +1,6 @@
 package ru.michaelilyin.mobileapplication.api.command
 
+import retrofit2.Response
 import ru.michaelilyin.mobileapplication.api.model.Demo
 import ru.michaelilyin.mobileapplication.api.RestResourceCmd
 
@@ -12,7 +13,7 @@ class FetchDemoCmd : RestResourceCmd<ArrayList<Demo>>() {
         if (response.isSuccessful) {
             return response.body().toArrayList()
         } else {
-            throw RuntimeException(response.message())
+            throw ApiException(response.code(), response.message())
         }
     }
 }
