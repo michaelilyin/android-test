@@ -6,19 +6,16 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Menu
 import android.view.View
-import android.widget.Button
 import ru.michaelilyin.mobileapplication.api.ApiService
 import ru.michaelilyin.mobileapplication.api.command.FetchDemoCmd
-import ru.michaelilyin.mobileapplication.api.model.Demo
-import ru.michaelilyin.mobileapplication.service.AbstractBackgroundService
 
 class MainActivity : Activity() {
 
     private val tag = MainActivity::class.java.name
 
     private val inputProcessor = InputProcessor()
-    private val serviceConnection = ApiService.Connection()
 
     private val recyclerView: RecyclerView by lazy {
         findViewById(R.id.elements) as RecyclerView
@@ -30,36 +27,14 @@ class MainActivity : Activity() {
 
         recyclerView.setHasFixedSize(true)
 
-        val btnFetch = findViewById(R.id.btn_fetch) as Button
-
         val linearManager = LinearLayoutManager(this)
         recyclerView.layoutManager = linearManager
 
         recyclerView.adapter = DemoViewAdapter()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!serviceConnection.isBound) {
-            Log.d(tag, "Try to bind service")
-            val intent = Intent(this@MainActivity, ApiService::class.java)
-            bindService(intent, serviceConnection, BIND_AUTO_CREATE)
-        }
-        Log.d(tag, "Try to send request")
-        val handler = AbstractBackgroundService.Handler(this@MainActivity) { act, msg ->
-            @Suppress("UNCHECKED_CAST")
-            val result = msg.data.getSerializable("result") as ArrayList<Demo>
-            Log.d(tag, "$result")
-            act.recyclerView.adapter = DemoViewAdapter(result)
-        }
-        serviceConnection.execute(FetchDemoCmd(), handler)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (serviceConnection.isBound) {
-            unbindService(serviceConnection)
-        }
+    override fun onCreatePanelMenu(featureId: Int, menu: Menu?): Boolean {
+        return super.onCreatePanelMenu(featureId, menu)
     }
 
     private inner class InputProcessor : View.OnClickListener {
@@ -70,6 +45,20 @@ class MainActivity : Activity() {
 
             }
         }
+
+        private fun onFetchButtonClicked() {
+            Log.d(tag, "Try to send request")
+//            val handler = ActivityHandler(this@MainActivity) { act, msg ->
+//                @Suppress("UNCHECKED_CAST")
+//                val result = msg.data.getSerializable("result") as ArrayList<Demo>
+//                Log.d(tag, "$result")
+//                act.recyclerView.adapter = DemoViewAdapter(result)
+//            }
+            val intent = Intent(this@MainActivity, ApiService::class.java)
+                    .putExtra("command", FetchDemoCmd())
+            startService(intent)
+        }
+
     }
 
 }

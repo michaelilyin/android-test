@@ -1,46 +1,55 @@
 package ru.michaelilyin.mobileapplication.api
 
-import android.content.ComponentName
-import android.content.ServiceConnection
+import android.app.Service
+import android.content.Intent
 import android.os.IBinder
+import android.os.Message
 import android.util.Log
-import ru.michaelilyin.mobileapplication.service.AbstractBackgroundService
+import ru.michaelilyin.mobileapplication.api.command.ApiException
 import ru.michaelilyin.mobileapplication.service.command.Command
 import java.io.Serializable
+import java.util.concurrent.Executors
 
 /**
  * Created by micha on 19.03.2017.
  */
-class ApiService : AbstractBackgroundService() {
-    class Connection : ServiceConnection {
+class ApiService : Service() {
 
-        private val tag = Connection::class.java.name
+    private val tag = ApiService::class.java.name
 
-        private var service: AbstractBackgroundService.DataServiceBinder? = null
-        private var connected: Boolean = false
+    private val executor = Executors.newSingleThreadExecutor()
 
-        override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d(tag, "Data service unbound")
-            connected = false
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
+
+    override fun onDestroy() {
+        if (!executor.isShutdown) {
+            executor.shutdown()
         }
+    }
 
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service != null) {
-                this.service = service as AbstractBackgroundService.DataServiceBinder
-                connected = true
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        @Suppress("UNCHECKED_CAST")
+        val command = intent.getSerializableExtra("command") as Command<out Serializable>
+        executor.submit {
+            try {
+                val result = command.call()
+                if (Log.isLoggable(tag, Log.DEBUG)) {
+                    Log.d(tag, "Received data: $result")
+                }
+                val message = Message.obtain()
+                message.data.putSerializable("result", result)
+//                        handler?.post {
+//                            Log.d(tag, "Execute callback in thread ${Thread.currentThread().name}")
+//                            handler.dispatchMessage(message)
+//                        }
+            } catch (e: ApiException) {
+                Log.e(tag, "Api exception: ${e.message}")
+            } catch (e: Exception) {
+                Log.e(tag, "Execution error", e)
             }
-            Log.d(tag, "Data service bound")
         }
-
-        val isBound: Boolean
-            get() = connected && service != null
-
-        fun <R : Serializable> execute(command: Command<R>, handler: android.os.Handler? = null) {
-            if (isBound) {
-                service?.execute(command, handler) ?: Log.w(tag, "Service does not bound")
-            } else {
-                Log.d(tag, "Service not bound yet")
-            }
-        }
+        return Service.START_STICKY
     }
 }
