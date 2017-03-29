@@ -9,9 +9,6 @@ class CountDownCmd : AbstractCmd<Unit>() {
 
     private val tag = CountDownCmd::class.java.name
 
-    override val timeoutSec: Long
-        get() = 15
-
     override fun call() {
         for (i in 0 .. 10) {
             Log.i(tag, "Count down command $i")

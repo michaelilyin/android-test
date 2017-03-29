@@ -11,6 +11,7 @@ class ApiModule {
     private val retrofit: Retrofit
 
     val demoApi: DemoApi
+    val timeLogApi: TimeLogApi
 
     init {
         retrofit = Retrofit.Builder()
@@ -18,5 +19,6 @@ class ApiModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         demoApi = retrofit.create(DemoApi::class.java)
+        timeLogApi = retrofit.create(TimeLogApi::class.java)
     }
 }

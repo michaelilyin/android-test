@@ -2,6 +2,8 @@ package ru.michaelilyin.mobileapplication.api
 
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
+import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.util.Log
@@ -15,12 +17,13 @@ import java.util.concurrent.Executors
  */
 class ApiService : Service() {
 
-    private val tag = ApiService::class.java.name
+    private val tag = ApiService::class.java.simpleName
 
     private val executor = Executors.newSingleThreadExecutor()
+    private val binder = ApiServiceBinder()
 
     override fun onBind(intent: Intent?): IBinder? {
-        return null
+        return binder
     }
 
     override fun onDestroy() {
@@ -30,8 +33,10 @@ class ApiService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        @Suppress("UNCHECKED_CAST")
-        val command = intent.getSerializableExtra("command") as Command<out Serializable>
+        return Service.START_STICKY
+    }
+
+    private fun <T : Serializable> execute(command: Command<T>, handler: Handler? = null) {
         executor.submit {
             try {
                 val result = command.call()
@@ -40,16 +45,22 @@ class ApiService : Service() {
                 }
                 val message = Message.obtain()
                 message.data.putSerializable("result", result)
-//                        handler?.post {
-//                            Log.d(tag, "Execute callback in thread ${Thread.currentThread().name}")
-//                            handler.dispatchMessage(message)
-//                        }
+                handler?.post {
+                    Log.d(tag, "Execute callback in thread ${Thread.currentThread().name}")
+                    handler.sendMessage(message)
+                }
             } catch (e: ApiException) {
                 Log.e(tag, "Api exception: ${e.message}")
             } catch (e: Exception) {
                 Log.e(tag, "Execution error", e)
             }
         }
-        return Service.START_STICKY
     }
+
+    inner class ApiServiceBinder: Binder() {
+        fun <T : Serializable> execute(command: Command<T>, handler: Handler? = null) {
+            this@ApiService.execute(command, handler)
+        }
+    }
+
 }
