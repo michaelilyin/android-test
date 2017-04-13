@@ -3,4 +3,7 @@
     <string name="lbl_start">Start</string>
     <string name="lbl_stop">Stop</string>
     <string name="lbl_fetch">Fetch</string>
+    <string name="lbl_refresh">Refresh</string>
+
+    <string name="pattern_time_range">%1$s - %2$s</string>
 </resources>

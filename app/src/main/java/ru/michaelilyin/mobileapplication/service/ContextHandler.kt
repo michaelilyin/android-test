@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by micha on 23.03.2017.
  */
-class ActivityHandler<T : Activity> constructor(
+class ContextHandler<T> constructor(
         activity: T,
         private val callback: ((T, Message) -> Unit)
 ) : android.os.Handler() {

@@ -15,6 +15,10 @@ class Application : android.app.Application() {
 
     override fun onCreate() {
         super.onCreate()
-        _apiModule = ApiModule()
+        _apiModule = ApiModule(
+                resources.getString(R.string.api_host),
+                resources.getString(R.string.api_port),
+                resources.getString(R.string.api_root)
+        )
     }
 }
