@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="api_host">http://michaelilyin.ru</string>
+    <string name="api_host">http://188.166.98.58</string>
     <string name="api_port">8080</string>
     <string name="api_root" />
+    <string name="icons_base">http://188.166.98.58:8080/resources/images/actions</string>
 </resources>

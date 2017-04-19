@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_time_log_row"
+    android:id="@+id/layout_time_log_row_uncompleted"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -29,6 +29,20 @@
             android:layout_height="wrap_content"
             android:padding="2dp"
             android:textColor="@color/text"/>
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_pause"
+        android:layout_gravity="end"/>
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_stop"
+        android:layout_gravity="end"/>
 
 </LinearLayout>

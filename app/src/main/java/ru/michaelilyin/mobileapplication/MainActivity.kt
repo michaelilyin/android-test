@@ -34,7 +34,7 @@ class MainActivity : Activity() {
 
         val transaction = fragmentManager.beginTransaction()
         val timeLogListFragment = TimeLogListFragment(service)
-        transaction.add(R.id.activity_main, timeLogListFragment)
+        transaction.replace(R.id.activity_main, timeLogListFragment)
         transaction.commit()
     }
 

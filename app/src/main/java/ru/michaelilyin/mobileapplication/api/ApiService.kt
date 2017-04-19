@@ -39,6 +39,7 @@ class ApiService : Service() {
     private fun <T : Serializable> execute(command: Command<T>, handler: Handler? = null) {
         executor.submit {
             try {
+                Log.d(tag, "Execute command: $command")
                 val result = command.call()
                 if (Log.isLoggable(tag, Log.DEBUG)) {
                     Log.d(tag, "Received data: $result")
@@ -46,13 +47,18 @@ class ApiService : Service() {
                 val message = Message.obtain()
                 message.data.putSerializable("result", result)
                 handler?.post {
-                    Log.d(tag, "Execute callback in thread ${Thread.currentThread().name}")
-                    handler.sendMessage(message)
+                    try {
+                        Log.d(tag, "Execute callback in thread ${Thread.currentThread().name}")
+                        handler.dispatchMessage(message)
+                        Log.d(tag, "Callback completed")
+                    } catch (e: Exception) {
+                        Log.e(tag, "Callback exception: ${e.message}", e)
+                    }
                 }
             } catch (e: ApiException) {
-                Log.e(tag, "Api exception: ${e.message}")
+                Log.e(tag, "Api exception: ${e.message}", e)
             } catch (e: Exception) {
-                Log.e(tag, "Execution error", e)
+                Log.e(tag, "Execution error: ${e.message}", e)
             }
         }
     }

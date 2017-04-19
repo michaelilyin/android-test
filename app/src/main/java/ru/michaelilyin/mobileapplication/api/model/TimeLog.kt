@@ -43,6 +43,7 @@ class TimeLog(
         var comment: String? = null
 ) {
     companion object {
-        private val defaultTimeBegin = SimpleDateFormat().parse("01/01/2016 4:5 PM, PDT")
+        private val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        private val defaultTimeBegin = sdf.parse("2016-01-01")
     }
 }
